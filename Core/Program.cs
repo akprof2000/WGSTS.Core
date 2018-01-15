@@ -1,12 +1,18 @@
-﻿using System;
+﻿using Core.Base;
+using System;
+using WGSTS.Logger;
 
 namespace Core
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Start");
+            CoreDispetcher.Logger = Logger.GetLogger();
+            CoreDispetcher.Start();
+            Console.ReadLine();
+            CoreDispetcher.Stop();
         }
     }
 }

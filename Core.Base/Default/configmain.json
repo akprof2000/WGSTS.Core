@@ -1,0 +1,6 @@
+{
+  "SubstancePath": "substance",
+  "LogLevel": "Trace",
+  "LogFileCount": 10,
+  "LogFileSize": 10485760
+}
