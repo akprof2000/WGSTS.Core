@@ -1,20 +1,30 @@
-﻿using System;
+﻿using Core.Interfaces;
+using Core.Substance;
+using System;
 using WGSTS.Logger;
 
 namespace Core.Base
 {
-    internal class DataDispetcherClass
+    internal static class DataDispetcherClass
     {
-        public static ILogger Logger { get; internal set; }
+        internal static ILogger Logger { get; set; } = new DummyLogger();
 
-        internal bool Start()
+        internal static bool Start()
         {
             return true;
         }
 
-        internal bool Stop()
+        internal static bool Stop()
         {
             return true;
         }
+
+        internal static bool Execution(StorageData value)
+        {
+
+            return true;
+
+        }
+
     }
 }

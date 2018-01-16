@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using WGSTS.Logger;
 
 namespace Core.Base
@@ -8,8 +9,6 @@ namespace Core.Base
     {
         private static CoreLoader _loader;
 
-        private static PluginDispetcherClass PluginDispetcher { get; }
-        private static DataDispetcherClass DataDispetcher { get; }
         private static ActionDispetcherClass ActionDispetcher { get; }
 
         public static ILogger Logger { get; set; } = new DummyLogger();
@@ -18,23 +17,30 @@ namespace Core.Base
         static CoreDispetcher()
         {
             AppDomain.CurrentDomain.UnhandledException += currentDomain_UnhandledException;
+            PluginDispetcherClass.OnForceRestart += pluginDispetcherClass_OnForceRestart;
+            PluginDispetcherClass.OnNeedRestart += pluginDispetcherClass_OnNeedRestart;
 
 
-            PluginDispetcher = new PluginDispetcherClass()
-            {
-
-            };
-
-            DataDispetcher = new DataDispetcherClass()
-            {
-
-            };
 
             ActionDispetcher = new ActionDispetcherClass()
             {
 
             };
 
+        }
+
+        private static void pluginDispetcherClass_OnNeedRestart()
+        {
+            Logger.Trace("Start _loader_OnNeedRestart");
+            plugin_onNeedRestart();
+            Logger.Trace("End _loader_OnNeedRestart");
+        }
+
+        private static void pluginDispetcherClass_OnForceRestart()
+        {
+            Logger.Trace("Start Plugin_onForceRestart");
+            (new Timer(onResetTimer)).Change(1000, 0);
+            Logger.Trace("End Plugin_onForceRestart");
         }
 
         private static void currentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs args)
@@ -53,6 +59,8 @@ namespace Core.Base
             try
             {
                 _loader = new CoreLoader(Logger);
+                _loader.OnNeedRestart += _loader_OnNeedRestart;
+
                 Logger.Debug("CoreLoader is been create");
                 run = _loader.Init();
             }
@@ -90,6 +98,51 @@ namespace Core.Base
             return run;
         }
 
+        private static void _loader_OnNeedRestart()
+        {
+            Logger.Trace("Start _loader_OnNeedRestart");
+            plugin_onNeedRestart();
+            Logger.Trace("End _loader_OnNeedRestart");
+        }
+
+        static bool plugin_onNeedRestart()
+        {
+            Logger.Trace("Start Plugin_onNeedRestart");
+
+            var ret = PluginDispetcherClass.IsRestart();
+            if (ret)
+            {
+                Logger.Info("Reset by 1 second");
+                (new Timer(onResetTimer)).Change(1000, 0);
+            }
+            else
+            {
+                Logger.Warning("Wait info reset by 3 second");
+                (new Timer(onResetNeedTimer)).Change(3000, 0);
+            }
+
+            Logger.Trace("End Plugin_onNeedRestart", ret);
+            return ret;
+        }
+
+        private static void onResetNeedTimer(object state)
+        {
+            Logger.Debug("Start onResetNeedTimer");
+            (state as Timer).Dispose();
+            plugin_onNeedRestart();
+            Logger.Trace("End onResetNeedTimer");
+        }
+
+        private static void onResetTimer(object state)
+        {
+            Logger.Debug("Start onResetTimer");
+            (state as Timer).Dispose();
+
+            Stop();
+            Start();
+            Logger.Trace("End onResetTimer");
+        }
+
         private static bool internalStart()
         {
             Logger.Trace("start InternalStart");
@@ -98,18 +151,15 @@ namespace Core.Base
             DataDispetcherClass.Logger = Logger;
             ActionDispetcherClass.Logger = Logger;
             PluginDispetcherClass.Logger = Logger;
-            ret = ConfigDispetcherClass.Start();
 
-            if (DataDispetcher != null && ret)
-                ret = DataDispetcher.Start();
+
+            ret = ConfigDispetcherClass.Start();
+            ret &= PluginDispetcherClass.Start();
+            ret &= DataDispetcherClass.Start();
 
             if (ActionDispetcher != null && ret)
                 ret = ActionDispetcher.Start();
-
-            if (PluginDispetcher != null && ret)
-                ret = PluginDispetcher.Start();
-
-
+            
             Logger.Debug("end InternalStart", ret);
             return ret;
         }
@@ -131,11 +181,9 @@ namespace Core.Base
 
             ret = ConfigDispetcherClass.Stop();
 
-            if (PluginDispetcher != null)
-                ret = PluginDispetcher.Stop();
+            ret &= PluginDispetcherClass.Stop();
 
-            if (DataDispetcher != null)
-                ret = DataDispetcher.Stop();
+            ret &= DataDispetcherClass.Stop();
 
             if (ActionDispetcher != null)
                 ret = ActionDispetcher.Stop();

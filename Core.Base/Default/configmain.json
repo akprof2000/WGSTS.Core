@@ -1,5 +1,6 @@
 {
   "SubstancePath": "substance",
+  "PluginPath": "plugins",
   "LogLevel": "Trace",
   "LogFileCount": 10,
   "LogFileSize": 10485760

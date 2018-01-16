@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WGSTS.LoggerInterfase" Version="1.0.0.2" />
+    <PackageReference Include="WGSTS.LoggerInterfase" Version="1.0.0.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Interfaces\Core.Interfaces.csproj" />
+    <ProjectReference Include="..\Core.Substance\Core.Substance.csproj" />
   </ItemGroup>
 
   <ItemGroup>

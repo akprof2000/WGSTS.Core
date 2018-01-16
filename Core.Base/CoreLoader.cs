@@ -8,7 +8,7 @@ namespace Core.Base
 {
     internal class CoreLoader
     {
-        internal Action OnNeedRestart;
+        internal event Action OnNeedRestart;
         static private string _path = AppDomain.CurrentDomain.BaseDirectory;
         static private string _fileconfig;
         private CoreConfig _coreConfig = null;
@@ -52,9 +52,14 @@ namespace Core.Base
             {
                 Logger.Fatal("File not load with base path", _fileconfig);
             }
-
-            Logger.Debug(_coreConfig.ToJson());
+            else
+            {
+                Logger.Debug(_coreConfig.ToJson());
+                PluginDispetcherClass.Init(_coreConfig.Plugins, _coreConfig.PluginsPath, pathconfig);
+                ActionDispetcherClass.ActionConnections = _coreConfig.ActionConnections;
+            }
             ConfigDispetcherClass.OnChangeSettings += configDispetcherClass_OnChangeSettings;
+
 
             Logger.Debug("End constructor CoreLoader");
         }

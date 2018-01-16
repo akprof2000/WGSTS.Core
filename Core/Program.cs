@@ -9,7 +9,8 @@ namespace Core
         public static void Main(string[] args)
         {
             Console.WriteLine("Start");
-            CoreDispetcher.Logger = Logger.GetLogger();
+            Logger.FileFullName = "Combine.log";
+            CoreDispetcher.Logger = Logger.GetLogger("Core.log");
             CoreDispetcher.Start();
             Console.ReadLine();
             CoreDispetcher.Stop();
