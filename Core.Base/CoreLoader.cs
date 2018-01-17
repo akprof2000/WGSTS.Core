@@ -57,6 +57,7 @@ namespace Core.Base
             {
                 Logger.Debug(_coreConfig.ToJson());
                 PluginDispetcherClass.Init(_coreConfig.Plugins, _coreConfig.PluginsPath, pathconfig);
+                DataDispetcherClass.Init(_coreConfig.StoreSyncroPlugin, _coreConfig.PluginsPath, pathconfig);
                 ActionDispetcherClass.ActionConnections = _coreConfig.ActionConnections;
             }
             ConfigDispetcherClass.OnChangeSettings += configDispetcherClass_OnChangeSettings;

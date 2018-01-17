@@ -45,7 +45,7 @@ namespace Core.Base
             {
                 Logger.Trace("Start  Action invoke", data.ToJson());
 
-                OnAction?.BeginInvoke(data, null, null);
+                Task.Run(() => OnAction?.Invoke(data));
             }
             catch (Exception ex)
             {

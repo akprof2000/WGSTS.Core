@@ -129,6 +129,7 @@ namespace Core.Base
             }
 
             _inCheck = true;
+            Thread.Sleep(3000);
             Logger.Debug("checkConfigData start");
             var path = Path.Combine(_path, loadconfig);
             var upath = Path.Combine(_path, config);
@@ -178,8 +179,7 @@ namespace Core.Base
 
             if (!ok)
             {
-                Logger.Warning("Some changed refill settings");
-                Thread.Sleep(3000);
+                Logger.Warning("Some changed refill settings");                
                 fillList();            
                 OnChangeSettings?.Invoke(changes, path, upath);
             }

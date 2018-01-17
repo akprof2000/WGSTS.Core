@@ -2,6 +2,7 @@
 
 namespace Core.Interfaces
 {
+
     public interface IConfiguration
     {
         string Name { get; }

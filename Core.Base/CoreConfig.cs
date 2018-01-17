@@ -12,6 +12,7 @@ namespace Core.Base
         public int LogFileCount { get; set; } = 10;
         public int LogFileSize { get; set; } = 1024 * 1024 * 10;
         public string PluginsPath { get; set; } = "plugins";
+        public BaseCoreConfiguration StoreSyncroPlugin { get; set; }
         public Dictionary<string, BaseCoreConfiguration> Plugins { get; set; } = new Dictionary<string, BaseCoreConfiguration>();
         public Dictionary<string, ActionConfig> ActionConnections { get; set; } = new Dictionary<string, ActionConfig>();
     }

@@ -1,4 +1,4 @@
-﻿using Core.Substance;
+﻿using Core.Interfaces;
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
@@ -79,8 +79,8 @@ namespace Core.Base
                     Logger.Trace("Dequeue", ssd.TheType);
 
                     
-                    if (ssd.Value is StorageData)
-                        DataDispetcherClass.Execution(ssd.Value as StorageData);
+                    if (ssd.Value.StorageAction != StorageActionType.None)
+                        DataDispetcherClass.Execution(ssd);
 
                     Logger.Debug("Start Action", ssd.TheType);
                     ActionDispetcherClass.Action(ssd);

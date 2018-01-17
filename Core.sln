@@ -1,15 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{FC51BD3D-F7E6-433B-B09B-92902521F082}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Base", "Core.Base\Core.Base.csproj", "{203CF7ED-7EEC-4924-B8BA-3A00A6F198AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Interfaces", "Core.Interfaces\Core.Interfaces.csproj", "{E00A5A00-D31B-4AF1-853A-97F544D116C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Interfaces", "Core.Interfaces\Core.Interfaces.csproj", "{E00A5A00-D31B-4AF1-853A-97F544D116C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Substance", "Core.Substance\Core.Substance.csproj", "{FA25B36D-7EA0-483F-9FE8-51E19CBE1A2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsideAppWatcher", "InsideAppWatcher\InsideAppWatcher.csproj", "{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Watcher", "Core.Watcher\Core.Watcher.csproj", "{B7A70813-1F46-4232-BF86-F111B8B1CA43}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +31,14 @@ Global
 		{E00A5A00-D31B-4AF1-853A-97F544D116C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E00A5A00-D31B-4AF1-853A-97F544D116C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E00A5A00-D31B-4AF1-853A-97F544D116C8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA25B36D-7EA0-483F-9FE8-51E19CBE1A2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA25B36D-7EA0-483F-9FE8-51E19CBE1A2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA25B36D-7EA0-483F-9FE8-51E19CBE1A2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA25B36D-7EA0-483F-9FE8-51E19CBE1A2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

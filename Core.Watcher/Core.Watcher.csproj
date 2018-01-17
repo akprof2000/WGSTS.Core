@@ -6,13 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WGSTS.Logger" Version="1.0.0.7" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Core.Base\Core.Base.csproj" />
-    <ProjectReference Include="..\Core.Watcher\Core.Watcher.csproj" />
     <ProjectReference Include="..\InsideAppWatcher\InsideAppWatcher.csproj" />
   </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /E /C /I /H /R /Y  &quot;$(TargetDir)$(TargetName).runtimeconfig.json&quot; &quot;$(SolutionDir)Core\$(OutDir)&quot;" />
+  </Target>
 
 </Project>

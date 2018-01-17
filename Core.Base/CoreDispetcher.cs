@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using WGSTS.Logger;
 
 namespace Core.Base
@@ -17,7 +19,23 @@ namespace Core.Base
             AppDomain.CurrentDomain.UnhandledException += currentDomain_UnhandledException;
             PluginDispetcherClass.OnForceRestart += pluginDispetcherClass_OnForceRestart;
             PluginDispetcherClass.OnNeedRestart += pluginDispetcherClass_OnNeedRestart;
+            DataDispetcherClass.OnForceRestart += dataDispetcherClass_OnForceRestart;
+            DataDispetcherClass.OnNeedRestart += dataDispetcherClass_OnNeedRestart;
             ActionDispetcherClass.OnAction += actionDispetcherClass_OnAction;
+        }
+
+        private static void dataDispetcherClass_OnNeedRestart()
+        {
+            Logger.Trace("Start dataDispetcherClass_OnNeedRestart");
+            plugin_onNeedRestart();
+            Logger.Trace("End dataDispetcherClass_OnNeedRestart");
+        }
+
+        private static void dataDispetcherClass_OnForceRestart()
+        {
+            Logger.Trace("Start dataDispetcherClass_OnForceRestart");
+            shutdown_now();
+            Logger.Trace("End dataDispetcherClass_OnForceRestart");
         }
 
         private static void actionDispetcherClass_OnAction(SandboxDataValue ssd)
@@ -30,15 +48,15 @@ namespace Core.Base
 
         private static void pluginDispetcherClass_OnNeedRestart()
         {
-            Logger.Trace("Start _loader_OnNeedRestart");
+            Logger.Trace("Start pluginDispetcherClass_OnNeedRestart");
             plugin_onNeedRestart();
-            Logger.Trace("End _loader_OnNeedRestart");
+            Logger.Trace("End pluginDispetcherClass_OnNeedRestart");
         }
 
         private static void pluginDispetcherClass_OnForceRestart()
         {
             Logger.Trace("Start Plugin_onForceRestart");
-            (new Timer(onResetTimer)).Change(1000, 0);
+            shutdown_now();
             Logger.Trace("End Plugin_onForceRestart");
         }
 
@@ -53,6 +71,11 @@ namespace Core.Base
         public static bool Start(bool repeat = false)
         {
             Logger.Info("Start core");
+            ConfigDispetcherClass.Logger = Logger;
+            DataDispetcherClass.Logger = Logger;
+            ActionDispetcherClass.Logger = Logger;
+            PluginDispetcherClass.Logger = Logger;
+
             Stop();
             var run = false;
             try
@@ -97,11 +120,29 @@ namespace Core.Base
             return run;
         }
 
+
         private static void _loader_OnNeedRestart()
         {
             Logger.Trace("Start _loader_OnNeedRestart");
-            plugin_onNeedRestart();
+            shutdown_now();
             Logger.Trace("End _loader_OnNeedRestart");
+        }
+
+
+        static void shutdown_now()
+        {
+            Logger.Info("Reset by 1 second");
+            (new Timer(onShutdownTimer)).Change(3000, 0);
+        }
+
+
+        public static event Action OnNeedClose;
+        private static void onShutdownTimer(object state)
+        {
+            Logger.Debug("Start onShutdownTimer");
+            (state as Timer).Dispose();
+            Task.Run(() => OnNeedClose?.Invoke());
+            Logger.Trace("End onShutdownTimer");
         }
 
         static bool plugin_onNeedRestart()
@@ -109,6 +150,7 @@ namespace Core.Base
             Logger.Trace("Start Plugin_onNeedRestart");
 
             var ret = PluginDispetcherClass.IsRestart();
+            ret &= DataDispetcherClass.IsRestart();
             if (ret)
             {
                 Logger.Info("Reset by 1 second");
@@ -146,10 +188,6 @@ namespace Core.Base
         {
             Logger.Trace("start InternalStart");
             var ret = false;
-            ConfigDispetcherClass.Logger = Logger;
-            DataDispetcherClass.Logger = Logger;
-            ActionDispetcherClass.Logger = Logger;
-            PluginDispetcherClass.Logger = Logger;
 
 
             ret = ConfigDispetcherClass.Start();

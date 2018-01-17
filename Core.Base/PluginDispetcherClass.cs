@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using WGSTS.Logger;
 
 namespace Core.Base
@@ -280,7 +281,7 @@ namespace Core.Base
             if (data != null)
             {
                 _currentDeligate[data] = method;
-                OnAction?.BeginInvoke(data, null, null);
+                Task.Run(() => OnAction?.Invoke(data));
             }
 
 
