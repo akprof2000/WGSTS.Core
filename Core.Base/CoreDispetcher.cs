@@ -9,8 +9,6 @@ namespace Core.Base
     {
         private static CoreLoader _loader;
 
-        private static ActionDispetcherClass ActionDispetcher { get; }
-
         public static ILogger Logger { get; set; } = new DummyLogger();
 
 
@@ -19,13 +17,14 @@ namespace Core.Base
             AppDomain.CurrentDomain.UnhandledException += currentDomain_UnhandledException;
             PluginDispetcherClass.OnForceRestart += pluginDispetcherClass_OnForceRestart;
             PluginDispetcherClass.OnNeedRestart += pluginDispetcherClass_OnNeedRestart;
+            ActionDispetcherClass.OnAction += actionDispetcherClass_OnAction;
+        }
 
-
-
-            ActionDispetcher = new ActionDispetcherClass()
-            {
-
-            };
+        private static void actionDispetcherClass_OnAction(SandboxDataValue ssd)
+        {
+            Logger.Trace("Start actionDispetcherClass_OnAction(SandboxDataValue ", ssd, ")");
+            PluginDispetcherClass.Action(ssd);
+            Logger.Trace("End actionDispetcherClass_OnAction(SandboxDataValue ssd)");
 
         }
 
@@ -156,10 +155,8 @@ namespace Core.Base
             ret = ConfigDispetcherClass.Start();
             ret &= PluginDispetcherClass.Start();
             ret &= DataDispetcherClass.Start();
+            ret &= ActionDispetcherClass.Start();
 
-            if (ActionDispetcher != null && ret)
-                ret = ActionDispetcher.Start();
-            
             Logger.Debug("end InternalStart", ret);
             return ret;
         }
@@ -185,8 +182,8 @@ namespace Core.Base
 
             ret &= DataDispetcherClass.Stop();
 
-            if (ActionDispetcher != null)
-                ret = ActionDispetcher.Stop();
+
+            ret &= ActionDispetcherClass.Stop();
 
 
             Logger.Debug("end InternalStop", ret);

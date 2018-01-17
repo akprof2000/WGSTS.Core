@@ -10,11 +10,12 @@ namespace Core.Base
 {
     internal static class ConfigDispetcherClass
     {
-        internal static event Action<HashSet<string>> OnChangeSettings;
+        internal static event Action<HashSet<string>, string, string> OnChangeSettings;
 
         static private string _path = AppDomain.CurrentDomain.BaseDirectory;
         private static bool _break;
         private static Thread _thread;
+        const string config = @"Config";
         const string loadconfig = @"ServerConfig";
         const string checkconfig = @"CheckConfig";
         const string checkconfigfile = @"HashFileWithConfig.json";
@@ -24,9 +25,11 @@ namespace Core.Base
         private static Dictionary<string, byte[]> _listConfig = new Dictionary<string, byte[]>();
         private static FileSystemWatcher _watcher;
         private static FileSystemEventArgs _duplicateEvent = new FileSystemEventArgs(WatcherChangeTypes.All, "", "");
+        private static bool _inCheck = false;
 
         static ConfigDispetcherClass()
         {
+            Directory.CreateDirectory(Path.Combine(_path, config));
             Directory.CreateDirectory(Path.Combine(_path, loadconfig));
             Directory.CreateDirectory(Path.Combine(_path, checkconfig));
         }
@@ -51,7 +54,7 @@ namespace Core.Base
             }
 
             WatchDir();
-            Logger.Trace("ConfigDispetcherClass start true");
+            Logger.Debug("ConfigDispetcherClass start true");
             return true;
         }
 
@@ -119,8 +122,16 @@ namespace Core.Base
 
         private static void checkConfigData()
         {
+            if (_inCheck)
+            {
+                Logger.Debug("Skip by change");
+                return;
+            }
+
+            _inCheck = true;
             Logger.Debug("checkConfigData start");
             var path = Path.Combine(_path, loadconfig);
+            var upath = Path.Combine(_path, config);
             var files = Directory.GetFiles(path);
             var ok = true;
             var changes = new HashSet<string>();
@@ -158,6 +169,7 @@ namespace Core.Base
                 var data = files.Where(a => Path.GetFileName(a).ToLower() == item).FirstOrDefault();
                 if (data == null)
                 {
+                    ok = false;
                     Logger.Info("file delete", item);
                     changes.Add(item);
                 }
@@ -167,10 +179,13 @@ namespace Core.Base
             if (!ok)
             {
                 Logger.Warning("Some changed refill settings");
-                fillList();
-                OnChangeSettings?.Invoke(changes);
+                Thread.Sleep(3000);
+                fillList();            
+                OnChangeSettings?.Invoke(changes, path, upath);
             }
             Logger.Debug("checkConfigData start");
+            _inCheck = false;
+
         }
 
         private static void processing()
@@ -210,7 +225,7 @@ namespace Core.Base
                 _thread.Join();
             }
 
-            Logger.Trace("Stop() stop");
+            Logger.Debug("Stop() stop");
             return true;
         }
     }

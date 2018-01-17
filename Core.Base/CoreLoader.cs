@@ -29,6 +29,7 @@ namespace Core.Base
             Logger.Trace("Start constructor CoreLoader");
             Logger.Info("Path of execution", _path);
             _fileconfig = Path.Combine(_path, pathconfig, baseconfigname);
+
             if (File.Exists(_fileconfig))
             {
                 _coreConfig = (File.ReadAllText(_fileconfig)).FromJson<CoreConfig>();
@@ -64,12 +65,15 @@ namespace Core.Base
             Logger.Debug("End constructor CoreLoader");
         }
 
-        private void configDispetcherClass_OnChangeSettings(HashSet<string> list)
+        private void configDispetcherClass_OnChangeSettings(HashSet<string> list, string from, string to)
         {
-            Logger.Trace("Start configDispetcherClass_OnChangeSettings(",list,")");
+            Logger.Trace("Start configDispetcherClass_OnChangeSettings(", list, ")");
             if (list.Contains(baseconfigname))
             {
-                Logger.Info("Change find in  ", baseconfigname , "need restart");
+                Logger.Info("Change find in  ", baseconfigname, "need restart");
+                if (File.Exists(Path.Combine(from, baseconfigname)))
+                    File.Copy(Path.Combine(from, baseconfigname), Path.Combine(to, baseconfigname), true);
+
                 OnNeedRestart?.Invoke();
             }
             Logger.Trace("End configDispetcherClass_OnChangeSettings(HashSet<string> list)");

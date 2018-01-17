@@ -7,16 +7,22 @@ namespace Core.Interfaces
         string Name { get; }
         string Description { get; }
         Guid Id { get; }
-        bool Init(BaseCoreConfiguration config);
+        bool Init(string config);
+        bool ChangeConfig(string config);
         bool IsRestart();
         bool Start();
         bool Stop();
+
         event Action OnNeedRestart;
         event Action OnForceRestart;
+        event ActionDelegate OnActionInvock;
+        event ActionDelegateWait OnAction;
+        event ActionCallBackDelegate OnActionCallBackInvock;
     }
 
-    public delegate bool EventDelegate(ISubstance value);
+    public delegate void EventDelegate(ISubstance value);
+
     public delegate ISubstance ActionDelegateWait(ISubstance value, Guid self, string eventName);
-    public delegate ISubstance ActionDelegate(ISubstance value, Guid self, string eventName);
+    public delegate void ActionDelegate(ISubstance value, Guid self, string eventName);
     public delegate void ActionCallBackDelegate(ISubstance value, Guid self, string eventName, EventDelegate method);
 }

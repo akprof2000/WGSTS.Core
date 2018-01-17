@@ -5,11 +5,13 @@ using WGSTS.Logger;
 
 namespace Core.Base
 {
-    internal class ActionDispetcherClass
+    internal static class ActionDispetcherClass
     {
+
+        internal static event Action<SandboxDataValue> OnAction;
         internal static ILogger Logger { get; set; } = new DummyLogger();
 
-        internal bool Start()
+        internal static bool Start()
         {
             Logger.Trace("Start() Start");
 
@@ -17,7 +19,7 @@ namespace Core.Base
             return true;
         }
 
-        internal bool Stop()
+        internal static bool Stop()
         {
             Logger.Trace("Start Stop");
 
@@ -43,7 +45,7 @@ namespace Core.Base
             {
                 Logger.Trace("Start  Action invoke", data.ToJson());
 
-                Task.Run(() => PluginDispetcherClass.Action(data));
+                OnAction?.BeginInvoke(data, null, null);
             }
             catch (Exception ex)
             {

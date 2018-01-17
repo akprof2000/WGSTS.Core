@@ -11,42 +11,76 @@ namespace Core.Base
 {
     internal static class PluginDispetcherClass
     {
-        public static ILogger Logger { get; internal set; }
+
+        static event Action<SandboxDataValue> OnAction;
+        public static ILogger Logger { get; set; } = new DummyLogger();
         static private string _path = AppDomain.CurrentDomain.BaseDirectory;
-        private static object _pathconfig;
+        private static string _pathconfig;
         private static string _pathplugin;
+
+
+        static PluginDispetcherClass()
+        {
+            ConfigDispetcherClass.OnChangeSettings += configDispetcherClass_OnChangeSettings;
+
+        }
+
+        private static void configDispetcherClass_OnChangeSettings(HashSet<string> config, string from, string to)
+        {
+            Logger.Trace("Start configDispetcherClass_OnChangeSettings(", config, ")");
+            foreach (var item in config)
+            {
+                if (_confplugins.ContainsKey(item))
+                {
+
+                    Logger.Info("Change find in  ", item, "need info plugin");
+                    if (File.Exists(Path.Combine(from, item)))
+                        File.Copy(Path.Combine(from, item), Path.Combine(to, item), true);
+
+                    foreach (var plugin in _confplugins[item])
+                    {
+                        Logger.Info("Send info in plugin  ", plugin.Name);
+
+                        var fn = Path.Combine(_pathconfig, item);
+                        string confdata = null;
+                        if (File.Exists(fn))
+                            confdata = File.ReadAllText(fn);                       
+
+                        plugin.ChangeConfig(confdata);
+                    }
+                 
+                }
+            }
+            Logger.Trace("End configDispetcherClass_OnChangeSettings(HashSet<string> list)");
+        }
 
         internal static bool Start()
         {
-            Logger.Trace("Start() Start");
+            Logger.Info("Start() Start");
             var ret = true;
-            if (_plugins != null)
+            foreach (var item in _plugins.Values)
             {
-                foreach (var item in _plugins.Values)
+                if (!item.Start())
                 {
-                    if (!item.Start())
-                    {
-                        Logger.Trace("Item Start false", item.ToJson());
-                        ret = false;
-                    }
-                    Thread.Sleep(300);
+                    Logger.Trace("Item Start false", item.ToJson());
+                    ret = false;
                 }
+                Thread.Sleep(300);
             }
-            Logger.Trace("End Start");
+
+            Logger.Debug("End Start");
             return ret;
         }
 
         internal static bool Stop()
         {
-            Logger.Trace("Start Stop");
-            if (_plugins != null)
+            Logger.Info("Start Stop");
+            foreach (var item in _plugins.Values)
             {
-                foreach (var item in _plugins.Values)
-                {
-                    item.Stop();
-                }
+                item.Stop();
             }
-            Logger.Trace("End Stop");
+
+            Logger.Debug("End Stop");
             return true;
         }
 
@@ -54,7 +88,7 @@ namespace Core.Base
         {
             var ret = false;
             Logger.Trace("Start  Action<T>(T action)");
-            
+
             var val = data.Value;
             foreach (var item in data.To)
             {
@@ -105,7 +139,7 @@ namespace Core.Base
                 }
             }
 
-            
+
             Logger.Trace("End  Action<T>(T action)");
             return ret;
         }
@@ -130,6 +164,7 @@ namespace Core.Base
 
 
         private static ConcurrentDictionary<Guid, IConfiguration> _plugins = new ConcurrentDictionary<Guid, IConfiguration>();
+        private static Dictionary<string, List<IConfiguration>> _confplugins = new Dictionary<string, List<IConfiguration>>();
         private static ConcurrentDictionary<IConfiguration, ConcurrentDictionary<Type, MethodInfo>> _methods = new ConcurrentDictionary<IConfiguration, ConcurrentDictionary<Type, MethodInfo>>();
         private static ConcurrentDictionary<object, ManualResetEvent> _currentWait = new ConcurrentDictionary<object, ManualResetEvent>();
         private static ConcurrentDictionary<object, EventDelegate> _currentDeligate = new ConcurrentDictionary<object, EventDelegate>();
@@ -154,7 +189,7 @@ namespace Core.Base
             }
 
             Logger.Debug("End Init ManageServiceStarter");
-            
+
         }
 
         private static bool loadPlugin(BaseCoreConfiguration config, out IConfiguration plugin)
@@ -181,9 +216,30 @@ namespace Core.Base
                             plugin = Activator.CreateInstance(type) as IConfiguration;
                             plugin.OnNeedRestart += plugin_OnNeedRestart;
                             plugin.OnForceRestart += plugin_OnForceRestart;
+                            plugin.OnAction += plugin_OnActionWait;
+                            plugin.OnActionInvock += plugin_OnAction;
+                            plugin.OnActionCallBackInvock += plugin_OnActionCallBack;
 
-                            plugin.Init(config);
-                            
+                            var fn = Path.Combine(_pathconfig, config.FileName);
+                            string confdata = null;
+                            if (File.Exists(fn))
+                                confdata = File.ReadAllText(fn);
+
+                            plugin.Init(confdata);
+
+                            if (_confplugins.ContainsKey(config.FileName))
+                            {
+                                _confplugins[config.FileName].Add(plugin);
+                            } else
+                            {
+                                var lst = new List<IConfiguration>
+                                {
+                                    plugin
+                                };
+
+                                _confplugins[config.FileName] = lst;
+                            }
+
                         }
                         catch (Exception ex)
                         {
@@ -198,6 +254,72 @@ namespace Core.Base
             ret = plugin != null;
             Logger.Info("end loadPlugin with", ret);
             return ret;
+        }
+
+
+        private static SandboxDataValue createOnAction(ISubstance value, Guid self, string eventName)
+        {
+            SandboxDataValue data = null;
+            Logger.Trace($"Start createOnAction {self}.{eventName}");
+            if (value is ISubstance)
+            {
+                data = new SandboxDataValue() { From = self, EventName = eventName, TheType = value?.GetType(), Controled = false, Value = value };
+            }
+            else
+                Logger.Error("value is not ISubstance", value.ToJson());
+            Logger.Trace("End createOnAction");
+            return data;
+        }
+
+
+        private static void plugin_OnActionCallBack(ISubstance value, Guid self, string eventName, EventDelegate method)
+        {
+            Logger.Trace($"Start Plugin_onActionCallBack {self}.{eventName}");
+
+            var data = createOnAction(value, self, eventName);
+            if (data != null)
+            {
+                _currentDeligate[data] = method;
+                OnAction?.BeginInvoke(data, null, null);
+            }
+
+
+            Logger.Trace("End Plugin_onActionCallBack");
+        }
+
+        private static ISubstance plugin_OnActionWait(ISubstance value, Guid self, string eventName)
+        {
+            Logger.Trace($"Start Plugin_onActionWait {self}.{eventName}");
+            var oSignalEvent = new ManualResetEvent(false);
+            ISubstance result = null;
+            var data = createOnAction(value, self, eventName);
+            if (data != null)
+            {
+                _currentWait[data] = oSignalEvent;
+                OnAction?.Invoke(data);
+
+                if (!oSignalEvent.WaitOne(99 * 1000)) //This thread will block here until the reset event is sent.
+                {
+                    _currentWait[data] = null;
+                    result = null;
+                }
+                else
+                    result = (data as SandboxDataValue).Value;
+            }
+            oSignalEvent.Dispose();
+            if (_currentWait.ContainsKey(data))
+                _currentWait.TryRemove(data, out oSignalEvent);
+            oSignalEvent = null;
+            Logger.Trace("End Plugin_onActionWait", result);
+            return result;
+        }
+
+        private static void plugin_OnAction(ISubstance value, Guid self, string eventName)
+        {
+            Logger.Trace($"Start Plugin_onAction {self}.{eventName}");
+            var data = createOnAction(value, self, eventName);
+            OnAction?.Invoke(data);
+            Logger.Trace("End Plugin_onAction");
         }
 
         internal static event Action OnNeedRestart;
