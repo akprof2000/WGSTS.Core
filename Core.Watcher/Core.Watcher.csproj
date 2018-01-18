@@ -9,6 +9,10 @@
     <ProjectReference Include="..\InsideAppWatcher\InsideAppWatcher.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.App" Version="2.0.5" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="xcopy /E /C /I /H /R /Y  &quot;$(TargetDir)$(TargetName).runtimeconfig.json&quot; &quot;$(SolutionDir)Core\$(OutDir)&quot;" />
   </Target>

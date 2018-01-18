@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="WGSTS.LoggerInterfase" Version="1.0.0.7" />
+    <PackageReference Include="WGSTS.LoggerInterfase" Version="1.0.0.8" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,6 +16,10 @@
     <None Update="Default\configmain.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.App" Version="2.0.5" />
   </ItemGroup>
 
 </Project>
