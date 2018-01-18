@@ -48,27 +48,35 @@ namespace InsideAppWatcher
 
         static void server()
         {
-            var tcpListener = new TcpListener(IPAddress.Loopback, SelfPort);
-
-            tcpListener.Start();
-            for (; ; )
+            try
             {
-                using (var tcpClient = tcpListener.AcceptTcpClient())
+                var tcpListener = new TcpListener(IPAddress.Loopback, SelfPort);
+
+                tcpListener.Start();
+                for (; ; )
                 {
-                    var stream = tcpClient.GetStream();
-                    var bytes = new byte[3];
-                    stream.Read(bytes, 0, 3);
-                    if (bytes[0] == 0 && bytes[1] == 1 && bytes[2] == 2)
+                    using (var tcpClient = tcpListener.AcceptTcpClient())
                     {
-                        stream.Write(new byte[] { 0x02, 0x01, 0x00 }, 0, 3);
-                        if (_break)
-                            break;
+                        var stream = tcpClient.GetStream();
+                        var bytes = new byte[3];
+                        stream.Read(bytes, 0, 3);
+                        if (bytes[0] == 0 && bytes[1] == 1 && bytes[2] == 2)
+                        {
+                            stream.Write(new byte[] { 0x02, 0x01, 0x00 }, 0, 3);
+                            if (_break)
+                                break;
+                        }
+                        stream.Close();
+                        tcpClient.Close();
                     }
-                    stream.Close();
-                    tcpClient.Close();
                 }
+
+                tcpListener.Stop();
             }
-            tcpListener.Stop();
+            catch
+            {
+                Environment.Exit(-1);
+            }
         }
 
         private static void process(object obj)
@@ -93,7 +101,7 @@ namespace InsideAppWatcher
                 {
                     try
                     {
-                       Process.Start(new ProcessStartInfo
+                        Process.Start(new ProcessStartInfo
                         {
                             Arguments = CoreStartDll,
                             FileName = "dotnet",
@@ -105,7 +113,7 @@ namespace InsideAppWatcher
                 }
 
 
-               
+
 
             }
         }
@@ -131,7 +139,7 @@ namespace InsideAppWatcher
                         tcpClient.Close();
                         if (bytes[0] == 2 && bytes[1] == 1 && bytes[2] == 0)
                         {
-                            
+
                             return true;
                         }
 

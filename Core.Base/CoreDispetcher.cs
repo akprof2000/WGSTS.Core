@@ -66,6 +66,8 @@ namespace Core.Base
             Exception e = (Exception)args.ExceptionObject;
             Logger.Fatal(e);
             Logger.Info("Runtime terminating:", args.IsTerminating);
+            Logger.Flush();
+            Task.Run(() => { Thread.Sleep(3000); Environment.Exit(-1); });
         }
 
         public static bool Start(bool repeat = false)

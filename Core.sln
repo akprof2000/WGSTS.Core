@@ -9,9 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Base", "Core.Base\Core
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Interfaces", "Core.Interfaces\Core.Interfaces.csproj", "{E00A5A00-D31B-4AF1-853A-97F544D116C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InsideAppWatcher", "InsideAppWatcher\InsideAppWatcher.csproj", "{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InsideAppWatcher", "InsideAppWatcher\InsideAppWatcher.csproj", "{21C9CFF6-D670-4D0F-8F7C-94DF4F742542}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core.Watcher", "Core.Watcher\Core.Watcher.csproj", "{B7A70813-1F46-4232-BF86-F111B8B1CA43}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core.Watcher", "Core.Watcher\Core.Watcher.csproj", "{B7A70813-1F46-4232-BF86-F111B8B1CA43}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestCore", "UnitTestCore\UnitTestCore.csproj", "{BC541E6A-D2F2-4F8D-8B8B-6C265D5614D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7A70813-1F46-4232-BF86-F111B8B1CA43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC541E6A-D2F2-4F8D-8B8B-6C265D5614D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC541E6A-D2F2-4F8D-8B8B-6C265D5614D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC541E6A-D2F2-4F8D-8B8B-6C265D5614D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC541E6A-D2F2-4F8D-8B8B-6C265D5614D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
