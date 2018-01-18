@@ -7,10 +7,10 @@ using WGSTS.Logger;
 
 namespace Core.Base
 {
-    public static class Sandbox
+    internal static class Sandbox
     {
 
-        public static ILogger Logger { get; set; } = new DummyLogger();
+        internal static ILogger Logger { get; set; } = new DummyLogger();
 
         private static Task _task;
         static private ConcurrentQueue<SandboxDataValue> ExchangeData { get; set; }
@@ -26,7 +26,7 @@ namespace Core.Base
 
 
 
-        public static bool AddAction(SandboxDataValue value)
+        internal static bool AddAction(SandboxDataValue value)
         {
             Logger.Trace("Start AddAction(SandboxData action)");
             Logger.Debug("Action is", value.ToJson());

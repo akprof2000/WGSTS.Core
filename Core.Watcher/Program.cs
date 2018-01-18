@@ -1,12 +1,14 @@
 ﻿using InsideAppWatcher;
 using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Core.Watcher
 {
     class Program
     {
-        static ManualResetEvent _mrs = new ManualResetEvent(false);
+        static AutoResetEvent _mrs = new AutoResetEvent(true);
+        private static bool _isSecond;
 
         public static void Main(string[] args)
         {
@@ -25,6 +27,14 @@ namespace Core.Watcher
             _mrs.Set();
             Console.WriteLine("Begin exit Core.Watcher");
             e.Cancel = true;
+
+            if (_isSecond)
+            {
+                Task.Run(() => { SendReceiveAndStartApp.Stop(); });
+                Thread.Sleep(3000);
+                Environment.Exit(-1);
+            }
+            _isSecond = true;
         }
     }
 }

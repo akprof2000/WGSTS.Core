@@ -6,9 +6,7 @@ namespace Core.Base
 {
     public class SandboxDataValue 
     {
-        public bool Controled { get; set; }
         public Guid From { get; set; }
-        public string EventName { get; set; }
         public Dictionary<Guid, string> To { get; set; } = new Dictionary<Guid, string>();
         ISubstance _value;
         public Type TheType { get; set; }
@@ -23,7 +21,7 @@ namespace Core.Base
             get { return _value; }
             set { _value = value; }
         }
-
-
+        public string EventName { get; set; }
+        public bool Controled { get; internal set; }
     }
 }

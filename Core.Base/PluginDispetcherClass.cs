@@ -14,7 +14,7 @@ namespace Core.Base
     {
 
         static event Action<SandboxDataValue> OnAction;
-        public static ILogger Logger { get; set; } = new DummyLogger();
+        internal static ILogger Logger { get; set; } = new DummyLogger();
         static private string _path = AppDomain.CurrentDomain.BaseDirectory;
         private static string _pathconfig;
         private static string _pathplugin;
@@ -264,7 +264,7 @@ namespace Core.Base
             Logger.Trace($"Start createOnAction {self}.{eventName}");
             if (value is ISubstance)
             {
-                data = new SandboxDataValue() { From = self, EventName = eventName, TheType = value?.GetType(), Controled = false, Value = value };
+                data = new SandboxDataValue() { From = self, EventName = eventName, TheType = value?.GetType(), Value = value };
             }
             else
                 Logger.Error("value is not ISubstance", value.ToJson());

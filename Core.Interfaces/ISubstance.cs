@@ -32,6 +32,7 @@ namespace Core.Interfaces
         string Description { get; set; }
         DateTime Creation { get; set; }
         StorageActionType StorageAction { get; set; }
+        long Timestamp { get; set; }
         #endregion ISubstance
     }
 

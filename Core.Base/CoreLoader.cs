@@ -16,14 +16,14 @@ namespace Core.Base
         const string baseconfigname = @"configmain.json";
 
         const string pathconfig = @"Config";
-        public static ILogger Logger { get; set; } = new DummyLogger();
+        internal static ILogger Logger { get; set; } = new DummyLogger();
 
         internal static string ConfigPath()
         {
             return _fileconfig;
         }
 
-        public CoreLoader(ILogger logger)
+        internal CoreLoader(ILogger logger)
         {
             Logger = logger;
             Logger.Trace("Start constructor CoreLoader");

@@ -10,6 +10,12 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="1.2.0" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
+    <PackageReference Include="WGSTS.Logger" Version="1.0.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core.Base\Core.Base.csproj" />
+    <ProjectReference Include="..\InsideAppWatcher\InsideAppWatcher.csproj" />
   </ItemGroup>
 
 </Project>

@@ -20,7 +20,7 @@ namespace Core.Base
         const string checkconfig = @"CheckConfig";
         const string checkconfigfile = @"HashFileWithConfig.json";
 
-        public static ILogger Logger { get; set; } = new DummyLogger();
+        internal static ILogger Logger { get; set; } = new DummyLogger();
 
         private static Dictionary<string, byte[]> _listConfig = new Dictionary<string, byte[]>();
         private static FileSystemWatcher _watcher;
@@ -81,7 +81,7 @@ namespace Core.Base
             Logger.Trace("fillList start");
         }
 
-        public static void WatchDir()
+        internal static void WatchDir()
         {
             Logger.Debug("WatchDir start");
             _watcher = new FileSystemWatcher

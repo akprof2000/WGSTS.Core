@@ -73,6 +73,7 @@ namespace Core.Base
         public static bool Start(bool repeat = false)
         {
             Logger.Info("Start core");
+            Sandbox.Logger = Logger;
             ConfigDispetcherClass.Logger = Logger;
             DataDispetcherClass.Logger = Logger;
             ActionDispetcherClass.Logger = Logger;
