@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Core.Interfaces\Core.Interfaces.csproj" />
+    <ProjectReference Include="..\GlobalInfo\GlobalInfo.csproj" />
   </ItemGroup>
 
   <ItemGroup>

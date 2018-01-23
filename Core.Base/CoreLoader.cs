@@ -33,6 +33,7 @@ namespace Core.Base
             if (File.Exists(_fileconfig))
             {
                 _coreConfig = (File.ReadAllText(_fileconfig)).FromJson<CoreConfig>();
+                
                 Logger.Info("File with config", _fileconfig);
             }
 

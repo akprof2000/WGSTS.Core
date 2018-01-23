@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces;
+using GlobalInfo;
 using System;
 using System.Collections.Generic;
 using WGSTS.Logger;
@@ -15,6 +16,7 @@ namespace Core.Base
         public BaseCoreConfiguration StoreSyncroPlugin { get; set; }
         public Dictionary<string, BaseCoreConfiguration> Plugins { get; set; } = new Dictionary<string, BaseCoreConfiguration>();
         public Dictionary<string, ActionConfig> ActionConnections { get; set; } = new Dictionary<string, ActionConfig>();
+        public byte Identity { get => GlobalData.Identity; set => GlobalData.Identity = value; } 
     }
     
     public class ActionConfig

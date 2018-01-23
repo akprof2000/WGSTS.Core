@@ -15,7 +15,7 @@ namespace InsideAppWatcher
         public static int Port { get; set; } = 33333;
         public static int SelfPort { get; set; } = 22222;
 
-        public static string CoreStartDll { get; set; } = "Core.dll";
+        public static string CoreStartDll { get; set; } = "Core.WebServer.dll";
 
 
         public static void RevercePort()

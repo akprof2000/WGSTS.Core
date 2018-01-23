@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /E /C /I /H /R /Y  &quot;$(TargetDir)$(TargetName).runtimeconfig.json&quot; &quot;$(SolutionDir)Core\$(OutDir)&quot;" />
+    <Exec Command="xcopy /E /C /I /H /R /Y  &quot;$(TargetDir)$(TargetName).runtimeconfig.json&quot; &quot;$(SolutionDir)Core\$(OutDir)&quot;&#xD;&#xA;xcopy /E /C /I /H /R /Y  &quot;$(TargetDir)$(TargetName).runtimeconfig.json&quot; &quot;$(SolutionDir)Core.WebServer\$(OutDir)&quot;" />
   </Target>
 
 </Project>
